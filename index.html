@@ -365,8 +365,21 @@ $('finishReviewBtn').onclick=()=>{
 $('reviewList').addEventListener('click',e=>{const b=e.target.closest('[data-vote]');if(b&&!b.disabled)castVote(b.dataset.vote,b.dataset.valid==='true')});
 $('sendChat').onclick=sendChat;$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
 async function boot(){
- const cfg=getConfig();if(cfg.url&&cfg.key){$('supabaseUrl').value=cfg.url;$('supabaseKey').value=cfg.key;const ok=await initSupabase(cfg.url,cfg.key);$('configStatus').textContent=ok?'تم تحميل إعدادات Supabase المحفوظة.':'تعذر تحميل الإعدادات المحفوظة.'}
- const room=new URLSearchParams(location.search).get('room');if(room){$('joinCode').value=room.toUpperCase();$('joinBox').classList.remove('hidden')}
+ // إعداد Supabase تلقائيًا على كل جهاز يفتح الموقع
+ const supabaseUrl = 'https://dpufcqqcnvpeovmeaxlk.supabase.co';
+ const supabasePublishableKey = 'sb_publishable_iNEEKslPfROyKKeWMunu0Q_C5FBfAVn';
+ $('supabaseUrl').value = supabaseUrl;
+ $('supabaseKey').value = supabasePublishableKey;
+ const ok = await initSupabase(supabaseUrl, supabasePublishableKey);
+ if(ok){
+  $('configStatus').textContent = 'تم تجهيز إعدادات الاتصال. أنشئ غرفة أو انضم لغرفة موجودة.';
+  $('connectPanel').classList.add('hidden');
+ }else{
+  $('configStatus').textContent = 'تعذر تجهيز الاتصال. راجع رابط المشروع والمفتاح.';
+  $('connectPanel').classList.remove('hidden');
+ }
+ const room=new URLSearchParams(location.search).get('room');
+ if(room){$('joinCode').value=room.toUpperCase();$('joinBox').classList.remove('hidden')}
  setConnection();
 }
 boot();
